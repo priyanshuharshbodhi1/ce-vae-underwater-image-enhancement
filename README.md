@@ -5,6 +5,11 @@
 This repository contains the code accompanying the scientific paper "Capsule Enhanced Variational AutoEncoder for
 Underwater Image Enhancement" by Rita Pucci and Niki Martinel. The paper is available on [arXiv](https://arxiv.org/abs/2406.01294).
 
+## 📚 Quick Links
+
+- **[Using Custom Datasets Guide](docs/CUSTOM_DATASETS_GUIDE.md)** - Complete guide for using your own datasets
+- **[Google Colab Notebook](notebooks/CE_VAE_Custom_Dataset.ipynb)** - Ready-to-use notebook for experiments
+
 ## Description
 
 Unmanned underwater image analysis for marine monitoring faces two key challenges: (i) degraded image quality due to light attenuation and (ii) hardware storage constraints limiting high-resolution image collection.
@@ -60,10 +65,18 @@ To train our model with the default configuration on the LSUI dataset, follow th
    ```
    you should first run:
       ```sh
-      bash scripts/generate_dataset_txt.sh /home/user/data/LSUI/ 
+      bash scripts/generate_dataset_txt.sh /home/user/data/LSUI/
       ```
    to generate the training and validation paired input text files `(LSUI_train_input.txt, LSUI_train_target.txt)` and `(LSUI_val_input.txt, LSUI_val_target.txt)`.    
    These are the "default" files that we have in the LSUI training configs `./configs/cevae_*_lsui.yaml`
+
+   **For custom datasets**, you can specify a custom name:
+   ```sh
+   bash scripts/generate_dataset_txt.sh /path/to/your/dataset/ MyDataset
+   ```
+   This generates `MyDataset_train_input.txt`, `MyDataset_train_target.txt`, etc.
+   
+   📖 **See [docs/CUSTOM_DATASETS_GUIDE.md](docs/CUSTOM_DATASETS_GUIDE.md) for complete instructions on using your own datasets.**
 
 3. Train the CE-VAE model without the
 discriminator.

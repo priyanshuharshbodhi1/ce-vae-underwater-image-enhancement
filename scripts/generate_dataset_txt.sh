@@ -2,16 +2,40 @@
 
 # Check if the main path argument is provided
 if [ -z "$1" ]; then
-    echo "Usage: $0 <main_path>"
+    echo "Usage: $0 <main_path> [dataset_name]"
+    echo ""
+    echo "Arguments:"
+    echo "  main_path     - Path to the dataset folder containing train/ and val/ subdirectories"
+    echo "  dataset_name  - Optional custom name for the dataset (default: LSUI)"
+    echo ""
+    echo "Example:"
+    echo "  $0 /path/to/dataset MyDataset"
+    echo ""
+    echo "Expected folder structure:"
+    echo "  <main_path>/"
+    echo "  ├── train/"
+    echo "  │   ├── GT/      # Ground truth images"
+    echo "  │   └── input/   # Degraded/input images"
+    echo "  └── val/"
+    echo "      ├── GT/"
+    echo "      └── input/"
     exit 1
 fi
 
 # Define the main path from the argument
 MAIN_PATH="$1"
 
+# Define the dataset name (default: LSUI for backward compatibility)
+DATASET_NAME="${2:-LSUI}"
+
 # Define the output path
 OUTPUT_FOLDER="./data"
 mkdir -p "${OUTPUT_FOLDER}"
+
+echo "Dataset path: ${MAIN_PATH}"
+echo "Dataset name: ${DATASET_NAME}"
+echo "Output folder: ${OUTPUT_FOLDER}"
+echo ""
 
 # Function to check if a file is an image
 check_is_image_file() {
@@ -47,12 +71,32 @@ declare -a phases=("train" "val")
 
 # Write files to output
 for phase in "${phases[@]}"; do
+    echo "Processing ${phase} split..."
+
+    # Check if directories exist
+    if [ ! -d "$MAIN_PATH/${phase}/GT" ]; then
+        echo "  Warning: $MAIN_PATH/${phase}/GT not found, skipping..."
+        continue
+    fi
+    if [ ! -d "$MAIN_PATH/${phase}/input" ]; then
+        echo "  Warning: $MAIN_PATH/${phase}/input not found, skipping..."
+        continue
+    fi
 
     # Gather image files
     gt_files=($(gather_image_files "$MAIN_PATH/${phase}/GT"))
     input_files=($(gather_image_files "$MAIN_PATH/${phase}/input"))
 
-    # Write to txt
-    write_to_file "${OUTPUT_FOLDER}/LSUI_${phase}_target.txt" "${gt_files[@]}"
-    write_to_file "${OUTPUT_FOLDER}/LSUI_${phase}_input.txt" "${input_files[@]}"
+    # Write to txt using the dataset name
+    write_to_file "${OUTPUT_FOLDER}/${DATASET_NAME}_${phase}_target.txt" "${gt_files[@]}"
+    write_to_file "${OUTPUT_FOLDER}/${DATASET_NAME}_${phase}_input.txt" "${input_files[@]}"
+
+    echo "  Found ${#input_files[@]} input images"
+    echo "  Found ${#gt_files[@]} ground truth images"
+    echo "  Created: ${DATASET_NAME}_${phase}_input.txt"
+    echo "  Created: ${DATASET_NAME}_${phase}_target.txt"
 done
+
+echo ""
+echo "Done! Generated files in ${OUTPUT_FOLDER}:"
+ls -la "${OUTPUT_FOLDER}"/${DATASET_NAME}_*.txt 2>/dev/null || echo "No files generated."
