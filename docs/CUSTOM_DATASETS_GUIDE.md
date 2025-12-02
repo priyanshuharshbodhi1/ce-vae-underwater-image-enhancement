@@ -266,7 +266,8 @@ Create a new Colab notebook and run these cells:
 
 ```python
 # Cell 1: Clone repository and install dependencies
-!git clone https://github.com/YOUR_USERNAME/ce-vae-underwater-image-enhancement.git
+# Replace with the actual repository URL or your fork
+!git clone https://github.com/priyanshuharshbodhi1/ce-vae-underwater-image-enhancement.git
 %cd ce-vae-underwater-image-enhancement
 
 !pip install -r requirements.txt
@@ -288,8 +289,17 @@ drive.mount('/content/drive')
 
 ```python
 # Cell 4: Download pre-trained weights
+# Option A: Download from SharePoint (see README for links)
+# You can manually download from the links in README and upload to Colab
 !mkdir -p data
-!gdown "YOUR_PRETRAINED_MODEL_GDRIVE_ID" -O data/imagenet-pre-trained-cevae.ckpt
+
+# Option B: If you've uploaded the checkpoint to Google Drive, copy it:
+# !cp "/content/drive/MyDrive/your_checkpoint.ckpt" data/imagenet-pre-trained-cevae.ckpt
+
+# Option C: If using gdown, replace FILE_ID with actual Google Drive file ID
+# To get FILE_ID: share the file, copy link, extract ID from URL
+# !pip install gdown
+# !gdown "FILE_ID" -O data/imagenet-pre-trained-cevae.ckpt
 ```
 
 ```python
